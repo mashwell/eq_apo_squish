@@ -20,7 +20,7 @@ Will output `./mh755_to_harman_squished_50.0_pct.txt` to the current directory w
 Note that if `input_file_name_squished_50.0_pct.txt` already exists, it will be overwritten.
 
 ## Notes
-- **Preamp value calculation**: The script takes the biggest positive gain from the set of (scaled) filters and sets an opposite negative value in decibels to compensate. This could either result in excessive or insufficient attenuation in the case of overlapping PEQ bands. Please double-check and adjust the preamp value to taste.
+- **Preamp value calculation**: The script only adjusts the preamp value if it already exists in the original filters file, and naively scales it by the squish value. This could either result in excessive or insufficient attenuation. Please double-check and adjust the preamp value to taste.
 
 ## Changelog
 
