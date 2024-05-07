@@ -18,17 +18,16 @@ args = parser.parse_args()
 
 # path handling
 path_to_txt_file = Path(args.path_to_txt_file).absolute()
-parent_dir = Path(args.path_to_txt_file).absolute().parent
+parent_dir = path_to_txt_file.parent
 # generate output filename
-squished_filename = "{}_squished_{}_pct.txt".format(
+output_filename = "{}_squished_{}_pct.txt".format(
     Path(args.path_to_txt_file).stem, args.squish_amount_pct)
+output_full_pathname = parent_dir / output_filename
 # store squishage percentage
 squish_amount_pct = args.squish_amount_pct
-## test printing parent dir
-print(f"parent dir: {parent_dir}")
-print(f"will write to: {parent_dir / squished_filename}")
 
 input_lines = []
+output_lines = ""
 
 # open the file
 try:
@@ -38,25 +37,35 @@ except Exception as e:
     print(f"Error: Unable to access input file: {str(e)}")
     sys.exit(1)
 
-# check for and adjust preamp
 for line in input_lines:
+    # regex match for filter lines
+    match = re.match(r'^Filter.+Gain (.+?) dB Q.+$', line)
+    # check for and adjust preamp
     if line.startswith("Preamp: "):
         preamp = float(line.strip(" dB\n").lstrip("Preamp: "))
-        new_preamp = round(preamp * (squish_amount_pct / 100), 2)
+        # calculate new preamp from squish % and round it to 3 digit precision
+        new_preamp = round(preamp * (squish_amount_pct / 100), 3)
         # substitute the new preamp value
         line = "Preamp: " + str(new_preamp) + " dB\n"
+        output_lines += line
+    # adjust filter gains
+    elif (match):
+        gain = match.group(1)
+        # calculate new gains from squish % and round it to 3 digit precision
+        new_gain = str(round(float(gain) * (squish_amount_pct / 100), 3))
+        # substitute the new gain value
+        line = line.replace(gain, new_gain)
+        output_lines += line
+    else:
+        output_lines += line
 
-# WIP: do things with the filter gains
-for line in input_lines:
-    if re.match(r'^Filter.+Gain.+', line):
-        print(line)
-# TODO: save the resulting file
-# try:
-#     with open(parent_dir / squished_filename, 'w') as f:
-#         flat_text = ""
-#         for lines in input_lines:
-#             flat_text += lines
-#         f.write(flat_text)
-# except Exception as e:
-#     print(f"Error: Unable to write output file: {str(e)}")
-#     sys.exit(1)
+# save the resulting file
+try:
+    with open(output_full_pathname, 'w') as f:
+        f.write(output_lines)
+        print(
+            f"Resulting filters written successfuly to {output_full_pathname}."
+        )
+except Exception as e:
+    print(f"Error: Unable to write output file: {str(e)}")
+    sys.exit(1)

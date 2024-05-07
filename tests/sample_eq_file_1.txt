@@ -1,6 +1,6 @@
 # Format reference: https://sourceforge.net/p/equalizerapo/wiki/Configuration%20reference/
 
-Preamp: -0.4 dB
+Preamp: -0.6 dB
 Filter 1: ON PK Fc 20 Hz Gain 0.6 dB Q 2.000
 Filter 2: ON PK Fc 100 Hz Gain -1.4 dB Q 0.600
 Filter 3: ON PK Fc 2300 Hz Gain -3.7 dB Q 2.000
