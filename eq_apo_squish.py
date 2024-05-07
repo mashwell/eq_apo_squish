@@ -39,14 +39,15 @@ except Exception as e:
 
 for line in input_lines:
     # regex match for filter lines
-    match = re.match(r'^Filter.+Gain (.+?) dB Q.+$', line)
+    match = re.match(r'^Filter.*?Gain\s+([-\d.]+)\s+dB', line)
     # check for and adjust preamp
     if line.startswith("Preamp: "):
-        preamp = float(line.strip(" dB\n").lstrip("Preamp: "))
+        preamp = float(line.split(" ")[1])
         # calculate new preamp from squish % and round it to 3 digit precision
         new_preamp = round(preamp * (squish_amount_pct / 100), 3)
         # substitute the new preamp value
-        line = "Preamp: " + str(new_preamp) + " dB\n"
+        # line = "Preamp: " + str(new_preamp) + " dB\n"
+        line = f"Preamp: {str(new_preamp)} dB\n"
         output_lines += line
     # adjust filter gains
     elif (match):
@@ -56,6 +57,7 @@ for line in input_lines:
         # substitute the new gain value
         line = line.replace(gain, new_gain)
         output_lines += line
+    # write line as-is
     else:
         output_lines += line
 

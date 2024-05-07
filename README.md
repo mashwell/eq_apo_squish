@@ -29,5 +29,9 @@ Note that if `input_file_name_squished_50.0_pct.txt` already exists, it will be 
 ### 0.0.1
 First version.
 
+### 0.0.2
+Made filter input handling more tolerant of multiple spaces inside a line. (Added a second test file that showcases this format.)
+Simplified preamp line matching logic.
+
 ## License
 MIT
